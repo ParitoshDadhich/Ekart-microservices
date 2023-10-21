@@ -25,7 +25,7 @@ public class ShopController {
 	private ShoppingService shoppingService;
 
 	/*
-	 * addProduct - use to add products into the cart
+	 * addProduct - use to add products into the cart and calculate total cost of cart
 	 * userId - user'id
 	 * requestList - products that are to be added into the cart
 	 */
