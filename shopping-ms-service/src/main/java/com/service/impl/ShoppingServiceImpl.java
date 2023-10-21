@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.dao.ShoppingDAO;
@@ -13,15 +14,18 @@ import com.model.CartEntity;
 import com.model.CartRequest;
 import com.model.CartResponse;
 import com.model.Product;
-import com.model.util.ProductConstants;
+import com.service.ShoppingService;
+import com.util.ProductConstants;
 
-public class ShoppingServiceImpl {
+@Service
+public class ShoppingServiceImpl implements ShoppingService{
 	@Autowired
 	@Qualifier("webclient")
 	private WebClient.Builder builder;
 	@Autowired
 	private ShoppingDAO repo;
 
+	@Override
 	public CartResponse processAndrequest(Long userId, List<CartRequest> shoppingCartRequestList) {
 		// calling Product API
 		String productServiceURL = ProductConstants.GET_PRODUCTS + shoppingCartRequestList.stream()
