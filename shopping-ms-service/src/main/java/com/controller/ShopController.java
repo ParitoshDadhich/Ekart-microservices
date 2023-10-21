@@ -18,7 +18,7 @@ import com.model.CartResponse;
 import com.service.ShoppingService;
 
 @RestController
-@RequestMapping("/shoppingcart")
+@RequestMapping("/shoppingCart")
 public class ShopController {
 
 	@Autowired
