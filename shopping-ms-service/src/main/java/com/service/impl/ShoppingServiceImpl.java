@@ -3,6 +3,7 @@ package com.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,15 @@ public class ShoppingServiceImpl implements ShoppingService{
 	@Autowired
 	private ShoppingDAO repo;
 
+	private static final Logger logger = Logger.getLogger(ShoppingServiceImpl.class);
+	
 	@Override
 	public CartResponse processAndrequest(Long userId, List<CartRequest> shoppingCartRequestList) {
-		// calling Product API
+		logger.info("Calling getAllProducts api...");
 		String productServiceURL = ProductConstants.GET_PRODUCTS + shoppingCartRequestList.stream()
 											.map(e -> String.valueOf(e.getProductId()))
 											.collect(Collectors.joining(","));
+		logger.info("Api call completed!");
 		
 		List<Product> productServiceList = builder.build()
 											.get()
@@ -43,18 +47,22 @@ public class ShoppingServiceImpl implements ShoppingService{
 		System.out.println(productServiceURL);
 		System.out.println(productServiceList);
 
-		//calculate cart total cost
+		logger.info("Calculating total cart cost...");
 		Double[] totalCost = cartTotalCost(productServiceList, shoppingCartRequestList);
+		logger.info("Calculation completed!");
 		
-		// create cartEntity
+		logger.info("Creating cart...");
 		CartEntity cartEntity = createCartEntity(userId, productServiceList, totalCost);
-
-		//save cart to DB
+		logger.info("Cart has been careated!");
+		
+		logger.info("Adding cart to DB...");
 		cartEntity = repo.save(cartEntity);
+		logger.info("Cart has been added to DB!");
 
-		// generate a response
+		logger.info("Generating response...");
 		CartResponse response = generateResponse(cartEntity, productServiceList);
-				
+		logger.info("Response has been generated!");		
+		
 		return response;
 	}
 	
