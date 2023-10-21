@@ -3,8 +3,10 @@ package com.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,24 +23,40 @@ import com.service.ProductService;
 public class ProductController {
 //	@Value("${product.message}")
 //	String message;
-//
+
 	@Autowired
-	ProductService service;
+	ProductService productService;
 	
 	
-	@GetMapping("/getproducts")
-	public List<Product> findAll(){
-//		System.out.println("Data from products props: " + message);
-		return service.getProducts();
+	@GetMapping(value="/getProducts", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> findAll(){
+		try {
+			return ResponseEntity.ok(productService.getProducts());
+		}
+		catch (Exception ex) {
+			String exceptionMessage = "Exception occured wile fetching all products. Exception msg: ";
+			return new ResponseEntity<String>(exceptionMessage + ex.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
-	@PostMapping("/addproduct")
-	public Product insert(@RequestBody Product product) {
-		return service.addProduct(product);
+	@GetMapping(value="/getProducts/{plist}", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getProductsByIds(@PathVariable List<Long> plist){
+		try {
+			return ResponseEntity.ok(productService.getProductsByIds(plist));
+		} catch(Exception ex) {
+			String exceptionMessage = "Exception occured during inserting a product using productIds. Excetion msg: ";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
+		}
 	}
 	
-	@GetMapping("/getproducts/{plist}")
-	public List<Product> getProductsByIds(@PathVariable List<Long> plist){
-		return service.getProductsByIds(plist);
+	@PostMapping(value="/addProduct", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> insert(@RequestBody Product product) {
+		try {
+			productService.addProduct(product);
+			return ResponseEntity.status(HttpStatus.OK).body("Product has been added!");
+		} catch(Exception ex) {
+			String exceptionMessage = "Exception occured during inserting a product. Excetion msg: ";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
+		}
 	}
 }
