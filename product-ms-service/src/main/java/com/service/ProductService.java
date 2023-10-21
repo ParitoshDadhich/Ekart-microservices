@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.dao.ProductDAO;
 import com.model.Product;
 
-@Service
 public interface ProductService {
 	
 	public Product addProduct(Product product);
