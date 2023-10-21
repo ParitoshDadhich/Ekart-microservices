@@ -9,20 +9,11 @@ import com.dao.ProductDAO;
 import com.model.Product;
 
 @Service
-public class ProductService {
+public interface ProductService {
 	
-	@Autowired
-	private ProductDAO dao;
+	public Product addProduct(Product product);
 	
-	public Product addProduct(Product product) {
-		return dao.save(product);
-	}
+	public List<Product> getProducts();
 	
-	public List<Product> getProducts(){
-		return (List<Product>) dao.findAll();
-	}
-	
-	public List<Product> getProductsByIds(List<Long> pList){
-		return (List<Product>) dao.findAllById(pList);
-	}
+	public List<Product> getProductsByIds(List<Long> pList);
 }
