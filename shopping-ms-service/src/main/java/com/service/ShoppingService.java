@@ -15,7 +15,6 @@ import com.model.CartRequest;
 import com.model.CartResponse;
 import com.model.Product;
 
-@Service
 public interface ShoppingService {
 	public CartResponse processAndrequest(Long userId, List<CartRequest> shoppingCartRequestList);
 }
