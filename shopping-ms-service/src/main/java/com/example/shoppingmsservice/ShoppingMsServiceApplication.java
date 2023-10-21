@@ -17,15 +17,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 @EnableEurekaClient
 public class ShoppingMsServiceApplication {
 
+	@Bean("webclient")
+	@LoadBalanced
+	public WebClient.Builder getWebClient() {
+		return WebClient.builder();
+	}
+	
 	public static void main(String[] args) {
 		SpringApplication.run(ShoppingMsServiceApplication.class, args);
 	}
-	
-	// for initializing webclient throught reactie	
-		@Bean("webclient")
-		@LoadBalanced
-		public WebClient.Builder getWebClient(){
-			return WebClient.builder();
-		}
-
 }
