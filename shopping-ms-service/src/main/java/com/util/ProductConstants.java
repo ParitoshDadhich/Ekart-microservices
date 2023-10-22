@@ -1,5 +1,5 @@
 package com.util;
 
 public class ProductConstants {
-	public final static String GET_PRODUCTS = "http://product-service/products/getProducts/";
+	public final static String GET_ALL_PRODUCTS_API = "http://product-service/products/getProducts/";
 }

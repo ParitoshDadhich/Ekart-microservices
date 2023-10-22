@@ -3,7 +3,8 @@ package com.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,14 @@ public class ShoppingServiceImpl implements ShoppingService{
 	@Qualifier("webclient")
 	private WebClient.Builder builder;
 	@Autowired
-	private ShoppingDAO repo;
+	private ShoppingDAO shoppingDao;
 
-	private static final Logger logger = Logger.getLogger(ShoppingServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ShoppingServiceImpl.class);
 	
 	@Override
 	public CartResponse processAndrequest(Long userId, List<CartRequest> shoppingCartRequestList) {
 		logger.info("Calling getAllProducts api...");
-		String productServiceURL = ProductConstants.GET_PRODUCTS + shoppingCartRequestList.stream()
+		String productServiceURL = ProductConstants.GET_ALL_PRODUCTS_API + shoppingCartRequestList.stream()
 											.map(e -> String.valueOf(e.getProductId()))
 											.collect(Collectors.joining(","));
 		logger.info("Api call completed!");
@@ -56,7 +57,7 @@ public class ShoppingServiceImpl implements ShoppingService{
 		logger.info("Cart has been careated!");
 		
 		logger.info("Adding cart to DB...");
-		cartEntity = repo.save(cartEntity);
+		cartEntity = shoppingDao.save(cartEntity);
 		logger.info("Cart has been added to DB!");
 
 		logger.info("Generating response...");
