@@ -18,4 +18,14 @@ public interface ProductService {
 	public List<Product> getProductsByIds(List<Long> pList);
 	
 	public Product updateProductDetailsById(Long productId, Product product);
+
+	public Product updateProductQuantityById(Long productId, Product product);
+
+	public Product updateProductAmountById(Long productId, Product product);
+
+	public Product updateProductNameById(Long productId, Product product);
+
+	public void deleteProductById(Long productId);
+
+	void deleteAllProducts();
 }

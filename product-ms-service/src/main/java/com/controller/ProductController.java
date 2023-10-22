@@ -55,9 +55,12 @@ public class ProductController {
 	 */
 	
 	@GetMapping(value="/getProducts/{plist}", consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getProductsByIds(@PathVariable List<Long> plist){
+	public ResponseEntity<String> getProductsByIds(@PathVariable List<Long> plist){
 		try {
-			return ResponseEntity.ok(productService.getProductsByIds(plist));
+			objectMapper = new ObjectMapper();
+			List<Product> products = productService.getProductsByIds(plist);
+			String allProducts = objectMapper.writeValueAsString(products);
+			return ResponseEntity.ok(allProducts);
 		} catch(Exception ex) {
 			String exceptionMessage = "Exception occured during inserting a product using productIds. Excetion msg: ";
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
@@ -96,4 +99,88 @@ public class ProductController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
 		}
 	}
+	
+	/*
+	 * updateProductDetailsById - this api is used to update:
+	 * 							  Product quantity
+	 */
+	
+	@PutMapping(value="/updateProductQuantityById", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> updateProductQuantityById(@RequestParam(name="productId", required=true) Long productId, @RequestBody Product product) {
+		try {
+			productService.updateProductQuantityById(productId, product);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Product quantity has been updated!");
+		} catch(Exception ex) {
+			String exceptionMessage = "Exception occured during updating product quantity. Excetion msg: ";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
+		}
+	}
+	
+	/*
+	 * updateProductDetailsById - this api is used to update:
+	 * 							  Product amount
+	 */
+	
+	@PutMapping(value="/updateProductAmountById", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> updateProductAmountById(@RequestParam(name="productId", required=true) Long productId, @RequestBody Product product) {
+		try {
+			productService.updateProductAmountById(productId, product);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Product amount has been updated!");
+		} catch(Exception ex) {
+			String exceptionMessage = "Exception occured during updating product amount. Excetion msg: ";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
+		}
+	}
+	
+	/*
+	 * updateProductDetailsById - this api is used to update:
+	 * 							  Product amount
+	 * 							  Product quantity
+	 * 							  Product name
+	 */
+	
+	@PutMapping(value="/updateProductNameById", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> updateProductNameById(@RequestParam(name="productId", required=true) Long productId, @RequestBody Product product) {
+		try {
+			productService.updateProductNameById(productId, product);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Product name has been updated!");
+		} catch(Exception ex) {
+			String exceptionMessage = "Exception occured during updating product name. Excetion msg: ";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
+		}
+	}
+		
+	/*
+	 * deleteProductById - this api is used to delete product by id:
+	 */
+	
+	@PutMapping(value="/deleteProducById", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> deleteProductById(@RequestParam(name="productId", required=true) Long productId) {
+		try {
+			productService.deleteProductById(productId);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Product has been deleted!");
+		} catch(Exception ex) {
+			String exceptionMessage = "Exception occured during deleting product. Excetion msg: ";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
+		}
+	}
+	
+	/*
+	 * updateProductDetailsById - this api is used to update:
+	 * 							  Product amount
+	 * 							  Product quantity
+	 * 							  Product name
+	 */
+	
+	@PutMapping(value="/deleteAllProducts", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> deleteAllProducts() {
+		try {
+			productService.deleteAllProducts();
+			return ResponseEntity.status(HttpStatus.OK).body("All product has been deleted!");
+		} catch(Exception ex) {
+			String exceptionMessage = "Exception occured during deleting product. Excetion msg: ";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage + ex.getMessage());
+		}
+	}
+	
 }
