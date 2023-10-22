@@ -1,5 +1,6 @@
 package com.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,7 +32,20 @@ public class ProductServiceImpl implements ProductService {
 
 	public List<Product> getProductsByIds(List<Long> pList) {
 		logger.info("Fetching product details by product Ids");
-		return (List<Product>) dao.findAllById(pList);
+		List<Product> products = new ArrayList<>();
+		
+		for (Long productId : pList) {
+            Product product = dao.findById(productId).orElse(null);
+
+            if (product == null) {
+                throw new ProductException("Product with ID " + productId + " not found in the DB");
+            }
+
+            products.add(product);
+        }
+
+		logger.info("Product details by product Ids has been fetched!");
+        return products;
 	}
 
 	@Override

@@ -2,8 +2,6 @@ package com.controller;
 
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +27,7 @@ public class ShopController {
 	 * userId - user'id
 	 * requestList - products that are to be added into the cart
 	 */
-	@PostMapping(value = "/{userId}/products", consumes = MediaType.APPLICATION_JSON)
+	@PostMapping("/{userId}/products")
 	public ResponseEntity<?> addProduct(@PathVariable Long userId, @RequestBody List<CartRequest> requestList) {
 		try {
 			CartResponse cartResponse = shoppingService.processAndrequest(userId, requestList);

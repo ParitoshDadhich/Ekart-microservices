@@ -1,5 +1,6 @@
 package com.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,6 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,6 +23,8 @@ import com.model.CartResponse;
 import com.model.Product;
 import com.service.ShoppingService;
 import com.util.ProductConstants;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class ShoppingServiceImpl implements ShoppingService{
@@ -35,18 +42,27 @@ public class ShoppingServiceImpl implements ShoppingService{
 		String productServiceURL = ProductConstants.GET_ALL_PRODUCTS_API + shoppingCartRequestList.stream()
 											.map(e -> String.valueOf(e.getProductId()))
 											.collect(Collectors.joining(","));
-		logger.info("Api call completed!");
 		
-		List<Product> productServiceList = builder.build()
-											.get()
-											.uri(productServiceURL)
-											.retrieve()
-											.bodyToFlux(Product.class)
-											.collectList()
-											.block();
+        ResponseEntity<List<Product>> responseEntity = builder.build().get()
+                .uri(productServiceURL)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .exchangeToMono(response -> response.toEntityList(Product.class))
+                .onErrorResume(error -> {
+                    // Handle errors
+                	String errorMessage = "An error occurred: " + error.getMessage();
+                	logger.error(errorMessage);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList()));
+                })
+                .block();
+
+       List<Product> productServiceList = responseEntity.getBody();
+       
+       logger.info("Api call completed!");
 		
-		System.out.println(productServiceURL);
-		System.out.println(productServiceList);
+		/*
+		 * System.out.println(productServiceURL);
+		 * System.out.println(productServiceList);
+		 */
 
 		logger.info("Calculating total cart cost...");
 		Double[] totalCost = cartTotalCost(productServiceList, shoppingCartRequestList);
